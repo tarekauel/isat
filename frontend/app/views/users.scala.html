@@ -1,0 +1,25 @@
+@(title: String)
+@call = {<script>userLoader("#user");</script>}
+@header(title, js = List(js.userLoader(), call)){
+    <h1>Userlist</h1>
+
+    <form method="post" action="/api/user">
+        <div class="form-group" style="width: 300px">
+            <label for="handle">Handle</label>
+            <input type="text" class="form-control" name="handle" id="handle" placeholder="Enter handle">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Add </button>
+        </div>
+    </form>
+
+    <table class="table">
+        <tr>
+            <th>name</th><th>handle</th><th>userId</th><th>watching</th><th>last update</th><th></th>
+        </tr>
+        <tbody id="user">
+
+        </tbody>
+    </table>
+
+}

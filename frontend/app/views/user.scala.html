@@ -1,0 +1,11 @@
+@(title:String, requestUrl: String)
+@call = {<script type="text/javascript">barchart("@requestUrl", "#chart")</script>}
+@header(title, List(css.barchart()), List(js.barchart(), call)){
+<div id="chart"></div>
+    <table class="table">
+
+    </table>
+
+}
+
+

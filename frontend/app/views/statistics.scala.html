@@ -1,0 +1,7 @@
+@(title: String)
+@call = {<script type="text/javascript">loadStatistics("#statistics")</script>}
+@header(title, js = List(js.statisticsLoader(), call)){
+<h1>Stats</h1>
+
+<div id="statistics"></div>
+}

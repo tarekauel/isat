@@ -1,0 +1,27 @@
+@(title: String, requestUrl: String)
+
+@call = {<script type="text/javascript">barchart("@requestUrl", "#chart")</script>}
+
+@header(title, List(css.barchart()), List(js.barchart(), call)){
+<h1>HashTags</h1>
+<form method="get" action="" id="form">
+    <div class="form-group" style="width: 350px">
+        <label for="ignoreHandle">Ignore a handle</label>
+        <input type="text" class="form-control" name="ignoreHandle" id="ignoreHandle"/>
+    </div>
+
+    <input type="submit" value="Ignore" class="btn btn-default" />
+</form>
+<div id="chart"></div>
+
+
+<script>
+    var x = window.location.search
+    x = x.substring(1,x.length).split("&")
+    x.forEach(function(e) {
+        e = e.split("=")
+        $("#form").append('<input type="hidden" name="' + e[0] + '" value="' + e[1] +'" />')
+    })
+
+</script>
+}

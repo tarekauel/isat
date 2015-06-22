@@ -1,0 +1,67 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+
+################ API ################
+
+GET     /api/hashtags                                            controllers.api.HashTag.topKByFrequency(k: Int, ignoreHandle: List[String], handlesToConsider: List[String], from: String = null, to: String = null)
+GET     /api/hashtags/timeseries                                 controllers.api.HashTag.timeseries(handle: String)
+GET     /api/hashtags/:tag                                       controllers.api.HashTag.topKUsersOfHashTag(tag: String, ignoreHandle: List[String], handlesToConsider: List[String])
+
+GET     /api/tweets                                              controllers.api.Tweet.recentTweets
+GET     /api/tweets/:user/:tag                                   controllers.api.Tweet.relatedToUserAndTag(user, tag)
+GET     /api/tweets/timeseries                                   controllers.api.Tweet.timeseries(handle: String)
+
+GET     /api/user                                                controllers.api.User.all
+POST    /api/user                                                controllers.api.User.add
+GET     /api/user/:user/hashtags                                  controllers.api.User.hashtags(user)
+GET     /api/user/:user/update                                   controllers.api.User.updateUser(user)
+GET     /api/user/:user/tweets/update                            controllers.api.User.updateTweets(user)
+
+GET     /api/mgmt/persist                                        controllers.api.Management.persist
+GET     /api/mgmt/stats                                          controllers.api.Management.stats
+GET     /api/mgmt/shutdown                                          controllers.api.Management.shutdown
+
+################ View ################
+
+GET     /users                     controllers.view.Users.index
+GET     /users/:user                controllers.view.Users.displayUser(user)
+
+GET     /hashtags                     controllers.view.HashTags.index
+GET     /hashtags/:tag                controllers.view.HashTags.tagDetails(tag)
+
+GET     /tweets                        controllers.view.Tweets.index
+GET     /tweets/:user/:tag             controllers.view.Tweets.relatedToUserAndTag(user, tag)
+
+GET     /statistics                        controllers.view.Statistics.index
+################     ################
+
+
+#GET     /users/:handle             controllers.view.Users.userDetails(handle: String)
+#GET     /tweets                    controllers.view.Tweets.#GET
+#GET     /hashtags                  controllers.view.HashTags.index(ignoreHandle: List[String])
+#GET     /hashtags/:tag             controllers.view.HashTags.details(tag: String)
+
+#GET     /hashtags/:tag/:user       controllers.view.HashTags.#GET(user: String, tag: String)
+
+# Users API
+#GET     /api/users                      controllers.api.Users.all
+#GET     /api/users/unwatched            controllers.api.Users.unwatched
+#GET     /api/users/watched              controllers.api.Users.watched
+#GET     /api/users/:handle/update       controllers.api.User.update(handle)
+#GET     /api/users/:handle/tweets/update       controllers.api.User.updateTweets(handle)
+
+# Hashtags Api
+#GET     /api/hashtags/:tag/user        controllers.api.HashTag.details(tag: String, ignoreHandle: List[String])
+#GET     /api/hashtags/statistics/frequency controllers.api.HashTag.frequencyDefault(ignoreHandle: List[String])
+
+#GET     /api/hashtags/statistics/frequency/:cnt controllers.api.HashTag.frequency(cnt: Int)
+#GET     /api/hashtags/statistics/frequencyuser/:handle controllers.api.HashTag.frequencyUser(handle: String)
+

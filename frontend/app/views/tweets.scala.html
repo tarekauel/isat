@@ -1,0 +1,14 @@
+@(title: String, requestUrl: String)
+@call = {<script type="text/javascript">loadTweets("@requestUrl", "#tweetContainer")</script>}
+@header(title, js = List(js.tweetLoader(), call)){
+<h1>Tweets-Overview</h1>
+
+<table class="table">
+    <tr>
+        <th>Tweet</th><th>User</th><th>Date</th>
+    </tr>
+    <tbody id="tweetContainer">
+    </tbody>
+</table>
+
+}
