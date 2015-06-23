@@ -109,7 +109,7 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
   }
 
   def persist(): Unit = {
-    if (changed || true) {
+    if (changed) {
       this.synchronized {
         logger.info("Start saving: " + dataPath)
 //        getAll.persist()
@@ -119,12 +119,12 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
         /*removeAll(filename + ".out.object")
         getAll.saveAsObjectFile(filename + ".out.object")
         changed = false*/
-        val toSave = getAll.distinct()
+        /*val toSave = getAll.distinct()
         if (!toSave.isEmpty()) {
           val fw = new FileWriter(dataPath)
           toSave.collect().foreach(t => fw.write(t.getJson + ",\n"))
           fw.close()
-        }
+        }*/
         logger.info("Finished saving: " + dataPath)
       }
     } else {

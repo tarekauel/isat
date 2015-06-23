@@ -28,24 +28,24 @@ object Starter extends App with LazyLogging {
   TweetManager(ctx)
   UserManager(ctx)
 
-  /*val registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT)
+  val registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT)
   registry.rebind(classOf[UserApi].getCanonicalName, new UserApiImpl())
   registry.rebind(classOf[TweetsApi].getCanonicalName, new TweetsApiImpl())
   registry.rebind(classOf[HashTagApi].getCanonicalName, new HashTagApiImpl())
   registry.rebind(classOf[ManagementApi].getCanonicalName, new ManagementApiImpl())
 
-  logger.info("Registry launched and api registered")*/
+  logger.info("Registry launched and api registered")
 
   //println(new HashTagApiImpl().topKByFrequency(40, List(), List(), None, None)
   //  .map(t => s""""${t._1}"""").reduce((a, b) => s"$a,\n$b"))
 
-  /*new Thread() {
+  new Thread() {
     override def run(): Unit = while (true) {
       Thread.sleep(10 * 60 * 1000)
     }
-  }.start()*/
+  }.start()
 
-  ctx.persistAllChanges()
+  //ctx.persistAllChanges()
 /*
   Twitter.start(ctx)
 

@@ -24,7 +24,7 @@ class TweetManager private(ctx: Context)
 
   override protected val typename: String = "Tweet"
 
-  /*{
+  {
     val strings = Source.fromFile("data/status.json").getLines().toSeq
 
     val tweets = strings.dropRight(1).map(s =>
@@ -32,7 +32,7 @@ class TweetManager private(ctx: Context)
     ).map(Tweet.getTweet)
 
     addEntity(tweets)
-  }*/
+  }
 
   private[this] val tweetByDate = new Ordering[Tweet]{
     override def compare(x: Tweet, y: Tweet): Int = x.createdAt.compareTo(y.createdAt)
