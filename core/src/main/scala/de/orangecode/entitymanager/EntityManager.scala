@@ -1,17 +1,20 @@
 package de.orangecode.entitymanager
 
+import java.io.{RandomAccessFile, FileWriter, BufferedWriter, PrintWriter}
+import java.nio.ByteBuffer
+import java.nio.channels.FileChannel
 import java.nio.file.{Files, Paths}
 
+import com.typesafe.scalalogging.LazyLogging
 import de.orangecode.Context
 import isat.model.Vertex
 import org.apache.commons.io.FileUtils
 import org.apache.spark
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.Row
 import org.apache.spark.storage.StorageLevel
 
-
+import scala.io.Source
 import scala.reflect.ClassTag
 
 /**
@@ -19,9 +22,12 @@ import scala.reflect.ClassTag
  * @since June 06, 2015.
  */
 abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: String => T)
-  extends Logging {
+  extends LazyLogging {
 
   protected val filename: String
+  protected val typename: String
+
+  private[this] lazy val dataPath: String = "data/" + "/" + typename + ".json"
 
   protected var allEntities: Option[RDD[(Long, T)]] = None
   protected var changed = false
@@ -50,6 +56,17 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
         allEntities = Some(e.map(x => (x.getId, x)))
         e.repartition(6)
         allEntities.get
+      /*logger.info("Start loading " + dataPath)
+      val strings = new String(Files.readAllBytes(Paths.get(dataPath))).split("\n")
+      if (strings.nonEmpty) {
+        val entities = strings.dropRight(1).map(s =>
+          if (s.charAt(0) == '{') s.substring(0, s.length - 1) else s.substring(1, s.length - 1)
+        ).map(convert)
+
+        val entityRdd = ctx.sc.parallelize(entities)
+        allEntities = Some(entityRdd.map(x => (x.getId, x)))
+        addEntity(entityRdd)
+        allEntities.get*/
       } else {
         ctx.sc.parallelize(Seq[(Long, T)]())
       }
@@ -58,7 +75,6 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
 
   def updateEntity(list: Seq[T]): Seq[T] = {
     this.synchronized {
-      import spark.SparkContext._
       val rddList = ctx.sc.parallelize(list map (x => (x.getId, x)))
       val remainingOld = getAllPair subtractByKey rddList
       allEntities = Some(remainingOld ++ rddList)
@@ -72,7 +88,7 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
       val all = getAllPair
       val newE = ctx.sc.parallelize(list.map(x => (x.getId, x))).subtractByKey(all).collect()
       if (newE.nonEmpty) {
-        logInfo(s"${newE.length} entities has been added")
+        logger.info(s"${newE.length} entities has been added")
         allEntities = Some(all ++ ctx.sc.parallelize(newE))
         changed = true
       }
@@ -85,7 +101,7 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
       val all = getAllPair
       val newE = rdd.map(x => (x.getId, x)).subtractByKey(all).collect()
       if (newE.nonEmpty) {
-        logInfo(s"${newE.length} entities has been added")
+        logger.info(s"${newE.length} entities has been added")
         allEntities = Some(all ++ ctx.sc.parallelize(newE))
         changed = true
       }
@@ -95,16 +111,24 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
   def persist(): Unit = {
     if (changed || true) {
       this.synchronized {
+        logger.info("Start saving: " + dataPath)
 //        getAll.persist()
         //removeAll("/Users/tarek/IdeaProjects/TwitterConsumer/" + filename + ".2.out.json")
         //moveAll("/Users/tarek/IdeaProjects/TwitterConsumer/" + filename + ".out.json", "/Users/tarek/IdeaProjects/TwitterConsumer/" + filename + ".2.out.json")
         //getAll.map(_.getJson).saveAsTextFile(filename + ".out.json")
-        removeAll(filename + ".out.object")
+        /*removeAll(filename + ".out.object")
         getAll.saveAsObjectFile(filename + ".out.object")
-        changed = false
+        changed = false*/
+        val toSave = getAll.distinct()
+        if (!toSave.isEmpty()) {
+          val fw = new FileWriter(dataPath)
+          toSave.collect().foreach(t => fw.write(t.getJson + ",\n"))
+          fw.close()
+        }
+        logger.info("Finished saving: " + dataPath)
       }
     } else {
-      logInfo("Everything up-to-date.")
+      logger.info("Everything up-to-date.")
     }
   }
 

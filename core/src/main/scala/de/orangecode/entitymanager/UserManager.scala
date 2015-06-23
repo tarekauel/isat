@@ -1,5 +1,6 @@
 package de.orangecode.entitymanager
 
+import com.typesafe.scalalogging.LazyLogging
 import de.orangecode.Context
 import isat.model.User
 import org.apache.spark.Logging
@@ -12,14 +13,16 @@ import scala.collection.mutable
  */
 class UserManager private(ctx: Context)
     extends EntityManager[User](ctx, User.getUser)
-    with Logging {
+    with LazyLogging {
 
   override val filename = "parquet/users"
+
+  override protected val typename: String = "User"
 
   private[this] val mapping = mutable.Map[Long, Option[User]]().withDefaultValue(None)
 
   private[this] def addUser(user: User): User = {
-    logInfo(s"User ${user.screenName} (${user.userId})  has been added to the data set")
+    logger.info(s"User ${user.screenName} (${user.userId})  has been added to the data set")
     addEntity(List(user)).head
   }
 
@@ -44,7 +47,7 @@ class UserManager private(ctx: Context)
   def addUserById(userId: Long): User = {
     val user = getUserById(userId)
     if (user.isDefined) {
-      logInfo(s"User $userId does already exist")
+      logger.info(s"User $userId does already exist")
       user.get
     } else {
       addUser(getFromTwitterById(userId))
@@ -54,7 +57,7 @@ class UserManager private(ctx: Context)
   def addUserByHandle(handle: String): Option[User] = {
     val user = getUserByHandle(handle)
     if (user.isDefined) {
-      logInfo(s"User $handle does already exist")
+      logger.info(s"User $handle does already exist")
       Some(user.get)
     } else {
       Some(addUser(getFromTwitterByHandle(handle)))

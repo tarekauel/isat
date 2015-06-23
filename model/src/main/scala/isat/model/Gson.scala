@@ -70,8 +70,20 @@ object Gson {
         src.foreach((x) => ja.add(ctx.serialize(x)))
         ja
       }
+    }).registerTypeAdapter(classOf[Date], new JsonSerializer[Date] {
+      override def serialize(src: Date, typeOfSrc: Type, context: JsonSerializationContext): JsonElement = {
+        new JsonPrimitive(src.getTime)
+      }
+    }).registerTypeAdapter(classOf[Date], new JsonDeserializer[Date] {
+      override def deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Date = {
+        val j = json.getAsJsonPrimitive
+        if (j.isNumber) {
+          new Date(j.getAsLong)
+        } else {
+          new Gson().fromJson[Date](json, classOf[Date])
+        }
+      }
     })
-
     .create()
 
 }

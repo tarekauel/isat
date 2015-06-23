@@ -1,5 +1,8 @@
 package de.orangecode.entitymanager
 
+import java.util.Scanner
+
+import com.typesafe.scalalogging.LazyLogging
 import de.orangecode.Context
 import isat.model.{Tweet, TweetResolved, User}
 import org.apache.spark.Logging
@@ -15,19 +18,21 @@ import scala.io.Source
  */
 class TweetManager private(ctx: Context)
     extends EntityManager[Tweet](ctx, Tweet.getTweet)
-    with Logging {
+    with LazyLogging {
 
   override val filename = "parquet/tweets"
 
-  {
-    val tweets = Source.fromFile("status.json").getLines().toSeq.dropRight(1)
-      .map(l =>
-      if (l.charAt(0) == '[') l.substring(1, l.length - 1)
-      else l.substring(0, l.length - 1))
-      .map(Tweet.getTweet)
+  override protected val typename: String = "Tweet"
+
+  /*{
+    val strings = Source.fromFile("data/status.json").getLines().toSeq
+
+    val tweets = strings.dropRight(1).map(s =>
+      if (s.charAt(0) != '[') s.substring(0, s.length - 1) else s.substring(1, s.length - 1)
+    ).map(Tweet.getTweet)
 
     addEntity(tweets)
-  }
+  }*/
 
   private[this] val tweetByDate = new Ordering[Tweet]{
     override def compare(x: Tweet, y: Tweet): Int = x.createdAt.compareTo(y.createdAt)

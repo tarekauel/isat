@@ -13,21 +13,7 @@ import twitter4j._
  */
 object Twitter extends App with LazyLogging {
 
-  val tracks =
-    Array("bigdata",
-      "#nlp",
-      "datascience",
-      "#ai",
-      "machinelearning",
-      "machineintelligence",
-      "predictiveanalysis",
-      "artificial intelligence",
-      "artificialintelligence")
-
-
-
-
-  val auth = ApiConnector.connect().getAuthorization
+ val auth = ApiConnector.connect().getAuthorization
 
   val tStream = new TwitterStreamFactory().getInstance(auth)
 
@@ -63,5 +49,7 @@ object Twitter extends App with LazyLogging {
   pWriter.close()
   tStream.cleanUp()
   tStream.shutdown()
+
+
 
 }

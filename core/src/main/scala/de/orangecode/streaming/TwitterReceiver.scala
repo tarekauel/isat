@@ -1,5 +1,6 @@
 package de.orangecode.streaming
 
+import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.Logging
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.receiver.Receiver
@@ -11,7 +12,7 @@ import twitter4j.auth.Authorization
  * @since June 15, 2015.
  */
 class TwitterReceiver(auth: Authorization, track: Array[String], storageLevel: StorageLevel)
-  extends Receiver[Status](storageLevel) with Logging {
+  extends Receiver[Status](storageLevel) with LazyLogging {
 
   override def onStart(): Unit = {
     new Thread("Twitter receiver") {
@@ -27,7 +28,7 @@ class TwitterReceiver(auth: Authorization, track: Array[String], storageLevel: S
     tStream.addListener(new StatusListener {
 
       override def onStallWarning(warning: StallWarning): Unit = {
-        logWarning(warning.getMessage + " " + warning.getPercentFull + "%")
+        logger.warn(warning.getMessage + " " + warning.getPercentFull + "%")
       }
 
       override def onDeletionNotice(statusDeletionNotice: StatusDeletionNotice): Unit = {
@@ -35,20 +36,20 @@ class TwitterReceiver(auth: Authorization, track: Array[String], storageLevel: S
       }
 
       override def onScrubGeo(userId: Long, upToStatusId: Long): Unit = {
-        logWarning("On scrub geo " + userId + " up to status " + upToStatusId)
+        logger.warn("On scrub geo " + userId + " up to status " + upToStatusId)
       }
 
       override def onStatus(status: Status): Unit = {
-        logInfo("Received a status")
+        logger.info("Received a status")
         store(status)
       }
 
       override def onTrackLimitationNotice(numberOfLimitedStatuses: Int): Unit = {
-        logWarning("Limited status: " + numberOfLimitedStatuses)
+        logger.warn("Limited status: " + numberOfLimitedStatuses)
       }
 
       override def onException(ex: Exception): Unit = {
-        logError(ex.getMessage)
+        logger.error(ex.getMessage)
       }
     })
 

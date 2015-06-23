@@ -1,5 +1,6 @@
 package de.orangecode.entitymanager
 
+import com.typesafe.scalalogging.LazyLogging
 import de.orangecode.Context
 import isat.model.{Tweet, Gson, HashTag}
 import org.apache.spark.Logging
@@ -12,9 +13,11 @@ import scala.io.Source
  */
 class HashTagManager private(ctx: Context)
     extends EntityManager[HashTag](ctx, HashTag.getHashTag)
-    with Logging {
+    with LazyLogging {
 
   override val filename = "parquet/hashtags"
+
+  override protected val typename: String = "HashTag"
 }
 
 object HashTagManager {
