@@ -1,5 +1,6 @@
 package de.orangecode.entitymanager
 
+import java.io.File
 import java.util.Scanner
 
 import com.typesafe.scalalogging.LazyLogging
@@ -25,6 +26,7 @@ class TweetManager private(ctx: Context)
   override protected val typename: String = "Tweet"
 
   {
+    logger.info(new File(".").getAbsolutePath)
     val strings = Source.fromFile("data/status.json").getLines().toSeq
 
     val tweets = strings.dropRight(1).map(s =>

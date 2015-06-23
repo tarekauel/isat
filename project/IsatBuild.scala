@@ -77,6 +77,8 @@ object IsatBuild extends Build {
           "org.apache.spark" % "spark-streaming_2.11" % "1.4.0",
           "javax.persistence" % "persistence-api" % "1.0.2"
         ),
-        fork := true
+        fork := true,
+        baseDirectory in run := file("./"),
+        javaOptions += "-Dlog4j.configuration=log4j.properties"
       ))
 }
