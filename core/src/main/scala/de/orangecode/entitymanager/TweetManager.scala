@@ -25,9 +25,8 @@ class TweetManager private(ctx: Context)
 
   override protected val typename: String = "Tweet"
 
-  {
-    logger.info(new File(".").getAbsolutePath)
-    val strings = Source.fromFile("data/status.json", "UTF-8").getLines().toSeq
+  private[this] def addFromFile(filename: String): Unit = {
+    val strings = Source.fromFile(filename, "UTF-8").getLines().toSeq
 
     val tweets = strings.dropRight(1).map(s =>
       if (s.charAt(0) != '[') s.substring(0, s.length - 1) else s.substring(1, s.length - 1)
@@ -35,6 +34,9 @@ class TweetManager private(ctx: Context)
 
     addEntity(tweets)
   }
+
+  addFromFile("data/status_basic.json")
+  addFromFile("data/status.json")
 
   private[this] val tweetByDate = new Ordering[Tweet]{
     override def compare(x: Tweet, y: Tweet): Int = x.createdAt.compareTo(y.createdAt)
