@@ -19,7 +19,7 @@ object Starter extends App with LazyLogging {
 
   val conf = new SparkConf()
     .setAppName("ISAT")
-    .setMaster("local[*]")
+    .setMaster("spark://sparkdriver:7077")
 
   val twitter = ApiConnector.connect()
   val ctx = new Context(twitter, conf)
