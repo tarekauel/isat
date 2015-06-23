@@ -27,7 +27,7 @@ class TweetManager private(ctx: Context)
 
   {
     logger.info(new File(".").getAbsolutePath)
-    val strings = Source.fromFile("data/status.json").getLines().toSeq
+    val strings = Source.fromFile("data/status.json", "UTF-8").getLines().toSeq
 
     val tweets = strings.dropRight(1).map(s =>
       if (s.charAt(0) != '[') s.substring(0, s.length - 1) else s.substring(1, s.length - 1)
