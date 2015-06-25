@@ -35,8 +35,8 @@ class TweetManager private(ctx: Context)
     addEntity(tweets)
   }
 
-  //addFromFile("data/status_basic.json")
-  //addFromFile("data/status.json")
+  addFromFile(System.getenv("dataPath") + "/data/status_basic.json")
+  addFromFile(System.getenv("dataPath") + "/data/status.json")
 
   private[this] val tweetByDate = new Ordering[Tweet]{
     override def compare(x: Tweet, y: Tweet): Int = x.createdAt.compareTo(y.createdAt)

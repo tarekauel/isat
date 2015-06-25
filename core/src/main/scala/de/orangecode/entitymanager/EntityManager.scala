@@ -27,7 +27,7 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
   protected val filename: String
   protected val typename: String
 
-  private[this] lazy val dataPath: String = "data/" + "/" + typename + ".json"
+  private[this] lazy val dataPath: String = System.getenv("dataPath") + "/" + typename + ".json"
 
   protected var allEntities: Option[RDD[(Long, T)]] = None
   protected var changed = false
