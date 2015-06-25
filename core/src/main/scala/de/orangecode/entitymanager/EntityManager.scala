@@ -38,7 +38,7 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
 
   private def getAllPair: RDD[(Long, T)] = {
     allEntities getOrElse {
-      val dirOut = Paths.get(filename + ".out.json")
+      /*val dirOut = Paths.get(filename + ".out.json")
       if (dirOut.toFile.exists()) {
         if (Paths.get(filename + ".in.json").toFile.exists()) {
           removeAll(filename + ".in.json")
@@ -67,9 +67,9 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
         allEntities = Some(entityRdd.map(x => (x.getId, x)))
         addEntity(entityRdd)
         allEntities.get*/
-      } else {
+      } else {*/
         ctx.sc.parallelize(Seq[(Long, T)]())
-      }
+      //}
     }
   }
 
