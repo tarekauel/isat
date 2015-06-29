@@ -70,6 +70,7 @@ class HashTag extends Controller with RmiBridge {
   }
 
   def timeseries(
+    k: Int,
     ignoreHandle: List[String],
     handlesToConsider: List[String],
     from: String,
@@ -77,7 +78,6 @@ class HashTag extends Controller with RmiBridge {
     time: String,
     startDate: String) = Action {
 
-    println(startDate + " is the starting date")
     val start = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(startDate)
     var i = 0
     var res = List[(Date, Seq[(String, Long)])]()
@@ -90,7 +90,7 @@ class HashTag extends Controller with RmiBridge {
 
     println(s"${period._1} : ${period._2}")
     
-    (0 to 12).par.foreach( i => {
+    (0 to (if (k == 0) 10 else k)).par.foreach( i => {
       val c = Calendar.getInstance()
       c.setTime(start)
       c.add(period._1, i * period._2)

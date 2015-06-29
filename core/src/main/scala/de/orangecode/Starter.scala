@@ -15,7 +15,7 @@ import org.apache.spark.{Logging, SparkConf}
  */
 object Starter extends App with LazyLogging {
 
-  def join(a: String, b: String) = a + "\n" + b
+  val start = System.currentTimeMillis
 
   val conf = new SparkConf()
     .setAppName("ISAT")
@@ -35,6 +35,7 @@ object Starter extends App with LazyLogging {
   registry.rebind(classOf[ManagementApi].getCanonicalName, new ManagementApiImpl())
 
   logger.info("Registry launched and api registered")
+  logger.info(s"Launched in ${System.currentTimeMillis() - start} ms")
 
   //println(new HashTagApiImpl().topKByFrequency(40, List(), List(), None, None)
   //  .map(t => s""""${t._1}"""").reduce((a, b) => s"$a,\n$b"))

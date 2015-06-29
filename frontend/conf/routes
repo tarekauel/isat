@@ -12,7 +12,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 ################ API ################
 
 GET     /api/hashtags                                            controllers.api.HashTag.topKByFrequency(k: Int = 0, ignoreHandle: List[String], handlesToConsider: List[String], from: String = null, to: String = null)
-GET     /api/hashtags/timeseries                                 controllers.api.HashTag.timeseries(ignoreHandle: List[String], handlesToConsider: List[String], from: String = null, to: String = null, time, startDate: String)
+GET     /api/hashtags/timeseries                                 controllers.api.HashTag.timeseries(k: Int = 0, ignoreHandle: List[String], handlesToConsider: List[String], from: String = null, to: String = null, time, startDate: String)
 GET     /api/hashtags/:tag                                       controllers.api.HashTag.topKUsersOfHashTag(tag: String, ignoreHandle: List[String], handlesToConsider: List[String])
 
 GET     /api/tweets                                              controllers.api.Tweet.recentTweets
