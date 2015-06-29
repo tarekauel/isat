@@ -85,6 +85,7 @@ class TweetManager private(ctx: Context)
     val hashTags = addedTweets.flatMap(_.hashTags)
     HashTagManager.get.addEntity(hashTags)
     addedTweets
+    List() //TODO change this
   }
 
   def updateTweets(userId: Long): Seq[Tweet] = {
