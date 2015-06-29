@@ -90,7 +90,7 @@ class HashTag extends Controller with RmiBridge {
 
     println(s"${period._1} : ${period._2}")
     
-    (0 to 12).foreach( i => {
+    (0 to 12).par.foreach( i => {
       val c = Calendar.getInstance()
       c.setTime(start)
       c.add(period._1, i * period._2)

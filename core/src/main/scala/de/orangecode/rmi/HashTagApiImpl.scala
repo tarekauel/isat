@@ -36,7 +36,7 @@ class HashTagApiImpl extends UnicastRemoteObject with HashTagApi {
 
     val tweets = filterOnTime(preFiltered, validFrom, validTo)
 
-    tweets.flatMap(_.hashTags).map((h) => (h.text.toLowerCase, 1L))
+    tweets.flatMap(_.hashTags.map((h) => (h.text.toLowerCase, 1L)))
       .reduceByKey(_ + _).takeOrdered(if (k != 0) k else 10)(stringLongOrder.reverse)
   }
 
