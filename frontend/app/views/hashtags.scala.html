@@ -5,22 +5,41 @@
 @header(title, List(css.barchart()), List(js.barchart(), call)){
 <h1>HashTags</h1>
 <form method="get" action="" id="form">
-    <div class="form-group" style="width: 350px">
+  <div id="ignoreHandleContainer" style="width: 350px;">
+      <div class="form-group" style="width: 350px">
         <label for="ignoreHandle">Ignore a handle</label>
         <input type="text" class="form-control" name="ignoreHandle" id="ignoreHandle"/>
+      </div>
     </div>
-
-    <input type="submit" value="Ignore" class="btn btn-default" />
+      <div id="handlesToConsiderContainer" style="width: 350px;">
+      <div class="form-group">
+          <label for="considerHandle">Handles to consider</label>
+          <input type="text" class="form-control" name="handlesToConsider" id="considerHandle"/>
+      </div>
+    </div>
+    <input type="submit" value="Select" class="btn btn-default" />
 </form>
 <div id="chart"></div>
 
 
 <script>
+    function removeField(name) {
+      $("#" + name).remove();
+    }
     var x = window.location.search
     x = x.substring(1,x.length).split("&")
     x.forEach(function(e) {
+      if (e !== "") {
         e = e.split("=")
-        $("#form").append('<input type="hidden" name="' + e[0] + '" value="' + e[1] +'" />')
+        if ((e[0] === "handlesToConsider" || e[0] === "ignoreHandle") && e[1] !== "") {  
+          var id = e[0] + e[1];
+          var input = '<input class="form-control" type="text" name="' + e[0] + '" value="' + e[1] +'" readonly/>';
+          var btn = '<span class="glyphicon glyphicon-remove input-group-addon" aira-hidden="true" ' +
+            'onclick="removeField(\'' + id + '\')"></span>';
+          $("#" + e[0] + "Container").append('<div class="input-group" id="' + id + '">' + input + btn +
+              '</div><br />');
+        }
+      }   
     })
 
 </script>

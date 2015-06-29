@@ -102,7 +102,7 @@ class UserManager private(ctx: Context)
   }
 
   def getUserByHandle(handles: Seq[String]): Seq[Long] = {
-    handles.map(getUserByHandle).filter(_.isDefined).map(_.get.userId)
+    handles.map(addUserByHandle).filter(_.isDefined).map(_.get.userId)
   }
 
   def setUpdateNow(userId: Long): Unit = {
