@@ -63,7 +63,7 @@ class TweetManager private(ctx: Context)
     }
   }
 
-  private[this] def updateTweets(userId: Long, maxId: Long): Seq[Tweet] = {
+  private[this] def updateTweets(userId: Long, maxId: Long): RDD[Tweet] = {
     val p = new Paging().count(200).maxId(maxId)
     val tweetsTwitter = ctx.twitter.getUserTimeline(userId, p)
     val tweets = resListToList(tweetsTwitter).map(Tweet.getTweet)
@@ -80,15 +80,14 @@ class TweetManager private(ctx: Context)
     JavaConversions.collectionAsScalaIterable(in).toList
   }
 
-  override def addEntity(list: Seq[Tweet]): Seq[Tweet] = {
+  override def addEntity(list: Seq[Tweet]): RDD[Tweet] = {
     val addedTweets = super.addEntity(list)
     val hashTags = addedTweets.flatMap(_.hashTags)
     HashTagManager.get.addEntity(hashTags)
-    addedTweets
-    List() //TODO change this
+    ctx.sc.parallelize(List()) //TODO change this should be addedTweets
   }
 
-  def updateTweets(userId: Long): Seq[Tweet] = {
+  def updateTweets(userId: Long): RDD[Tweet] = {
     val lastUpdate = UserManager.get.getUserById(userId).get.lastUpdate
     val lt: Option[Tweet] = {
       if (lastUpdate == 0) None

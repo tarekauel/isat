@@ -23,7 +23,7 @@ class UserManager private(ctx: Context)
 
   private[this] def addUser(user: User): User = {
     logger.info(s"User ${user.screenName} (${user.userId})  has been added to the data set")
-    addEntity(List(user)).head
+    addEntity(List(user)).collect().head
   }
 
   private[this] def getFromTwitterById(userId: Long): User = {

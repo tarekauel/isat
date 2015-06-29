@@ -38,7 +38,7 @@ class UserApiImpl extends UnicastRemoteObject with UserApi {
   @throws(classOf[RemoteException])
   override def updateTweets(handle: String): Seq[TweetResolved] =
     tm
-      .updateTweets(getUser(handle).getOrElse(addUser(handle).get).userId)
+      .updateTweets(getUser(handle).getOrElse(addUser(handle).get).userId).collect()
       .map(tm.resolveTweet)
 
   @throws(classOf[RemoteException])
