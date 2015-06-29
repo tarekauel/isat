@@ -83,26 +83,17 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
     }
   }
 
-  def addEntity(list: Seq[T]): Seq[T] = {
-    this.synchronized {
-      val all = getAllPair
-      val newE = ctx.sc.parallelize(list.map(x => (x.getId, x))).subtractByKey(all).collect()
-      if (newE.nonEmpty) {
-        logger.info(s"${newE.length} entities has been added")
-        allEntities = Some(all ++ ctx.sc.parallelize(newE))
-        changed = true
-      }
-      newE.map(_._2)
-    }
+  def addEntity(list: Seq[T]): Unit = {
+    addEntity(ctx.sc.parallelize(list))
   }
 
   def addEntity(rdd: RDD[T]): Unit = {
     this.synchronized {
       val all = getAllPair
-      val newE = rdd.map(x => (x.getId, x)).subtractByKey(all).collect()
-      if (newE.nonEmpty) {
-        logger.info(s"${newE.length} entities has been added")
-        allEntities = Some(all ++ ctx.sc.parallelize(newE))
+      val newE = rdd.map(x => (x.getId, x)).subtractByKey(all)
+      if (!newE.isEmpty()) {
+        logger.info(s"${newE.count()} entities has been added")
+        allEntities = Some(all ++ newE)
         changed = true
       }
     }
