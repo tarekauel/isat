@@ -7,6 +7,7 @@ import misc.RmiBridge
 import play.api.libs.json.Json
 import play.api.mvc._
 
+import scala.collection.mutable
 import scala.concurrent.{Future, Promise}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -80,7 +81,7 @@ class HashTag extends Controller with RmiBridge {
 
     val start = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).parse(startDate)
     var i = 0
-    var res = List[(Date, Seq[(String, Long)])]()
+    var res = mutable.ListBuffer[(Date, Seq[(String, Long)])]()
     val period = time match {
       case "MONTH" => (Calendar.MONTH, 1)
       case "YEAR" => (Calendar.YEAR, 1)
@@ -99,10 +100,15 @@ class HashTag extends Controller with RmiBridge {
       c.add(Calendar.SECOND, -1)
       val myEnd = c.getTime
 
-      res = res :+ (myEnd, hashTagApi
+      val data = (myEnd, hashTagApi
           .topKByFrequency(k = 15, ignoreHandle = ignoreHandle.filter(_ != ""),
             handlesToConsider = handlesToConsider.filter(_ != ""),
             validFrom = Option(myStart), validTo = Option(myEnd)))
+
+      res.synchronized {
+        res += data
+      }
+
     })
 
     var json = "["
