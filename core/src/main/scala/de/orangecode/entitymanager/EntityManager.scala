@@ -92,7 +92,7 @@ abstract class EntityManager[T <: Vertex: ClassTag](ctx: Context, convert: Strin
       val all = getAllPair
       val newE = rdd.map(x => (x.getId, x)).subtractByKey(all).cache()
       if (!newE.isEmpty()) {
-        logger.info(s"${newE.count()} entities has been added")
+        //logger.info(s"${newE.count()} entities has been added")
         allEntities = Some(all ++ newE)
         changed = true
         newE.map(_._2)
