@@ -22,6 +22,7 @@ function linechart(chartIdentifier) {
       .orient("left");
 
   var line = d3.svg.line()
+      .interpolate("step-after")
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.temperature); });
 
